@@ -1,176 +1,293 @@
 #!/usr/bin/env python3
-import os
 import random
-import shutil
-import subprocess
-import tempfile
-import time
+import os
 
 # -------------------------------
-# Game variables
+# Game State
 # -------------------------------
 score = 0
 level = 1
 streak = 0
 
 # -------------------------------
-# Allowed Linux commands in sandbox
+# Command Database (expandable)
 # -------------------------------
-allowed_commands = [
-    "ls", "pwd", "cd", "mkdir", "rmdir", "touch", "rm", "cp", "mv", "tree",
-    "cat", "head", "tail", "less", "nano", "vim", "grep", "wc", "echo",
-    "uname", "whoami", "id", "date", "uptime", "ps", "top", "free", "df",
-    "du", "ping", "curl", "wget", "tar", "gzip", "gunzip", "zip", "unzip",
-    "alias", "history", "sleep", "chmod", "chown", "env", "export", "source",
-    "clear", "dmesg"
+commands = [
+    {
+        "cmd": "ls",
+        "desc": "List files and directories",
+        "explanation": "Displays files and directories in the current location.",
+        "usage": "ls [options] [directory]",
+        "examples": [
+            "ls",
+            "ls -la",
+            "ls /home/user"
+        ]
+    },
+    {
+        "cmd": "pwd",
+        "desc": "Print current working directory",
+        "explanation": "Shows the full path of your current directory.",
+        "usage": "pwd",
+        "examples": [
+            "pwd"
+        ]
+    },
+    {
+        "cmd": "cd",
+        "desc": "Change directory",
+        "explanation": "Moves you into another directory.",
+        "usage": "cd [directory]",
+        "examples": [
+            "cd /home/user",
+            "cd ..",
+            "cd ~"
+        ]
+    },
+    {
+        "cmd": "mkdir",
+        "desc": "Create a new directory",
+        "explanation": "Creates one or more directories.",
+        "usage": "mkdir [directory_name]",
+        "examples": [
+            "mkdir test",
+            "mkdir folder1 folder2",
+            "mkdir -p parent/child"
+        ]
+    },
+    {
+        "cmd": "touch",
+        "desc": "Create a new empty file",
+        "explanation": "Creates a new file or updates a file timestamp.",
+        "usage": "touch [file]",
+        "examples": [
+            "touch file.txt",
+            "touch file1 file2"
+        ]
+    },
+    {
+        "cmd": "cp",
+        "desc": "Copy files or directories",
+        "explanation": "Copies files or directories from one location to another.",
+        "usage": "cp [source] [destination]",
+        "examples": [
+            "cp file.txt backup.txt",
+            "cp -r folder1 folder2",
+            "cp file.txt /home/user/Documents/"
+        ]
+    },
+    {
+        "cmd": "mv",
+        "desc": "Move or rename files",
+        "explanation": "Moves or renames files and directories.",
+        "usage": "mv [source] [destination]",
+        "examples": [
+            "mv file.txt newname.txt",
+            "mv file.txt /home/user/"
+        ]
+    },
+    {
+        "cmd": "rm",
+        "desc": "Remove files or directories",
+        "explanation": "Deletes files or directories permanently.",
+        "usage": "rm [options] [file]",
+        "examples": [
+            "rm file.txt",
+            "rm -r folder",
+            "rm -f file.txt"
+        ]
+    },
+    {
+        "cmd": "cat",
+        "desc": "Display file contents",
+        "explanation": "Prints file contents to the terminal.",
+        "usage": "cat [file]",
+        "examples": [
+            "cat file.txt",
+            "cat file1 file2"
+        ]
+    },
+    {
+        "cmd": "grep",
+        "desc": "Search for text in files",
+        "explanation": "Searches for patterns inside files.",
+        "usage": "grep [pattern] [file]",
+        "examples": [
+            "grep 'error' log.txt",
+            "grep -r 'hello' .",
+            "grep -i 'word' file.txt"
+        ]
+    },
+    {
+        "cmd": "chmod",
+        "desc": "Change file permissions",
+        "explanation": "Modifies file access permissions.",
+        "usage": "chmod [permissions] [file]",
+        "examples": [
+            "chmod +x script.sh",
+            "chmod 755 file.txt"
+        ]
+    },
+    {
+        "cmd": "chown",
+        "desc": "Change file ownership",
+        "explanation": "Changes the owner and group of a file.",
+        "usage": "chown [user]:[group] [file]",
+        "examples": [
+            "chown user file.txt",
+            "chown user:group file.txt"
+        ]
+    },
+    {
+        "cmd": "df",
+        "desc": "Show disk space usage",
+        "explanation": "Displays available and used disk space.",
+        "usage": "df [options]",
+        "examples": [
+            "df",
+            "df -h"
+        ]
+    },
+    {
+        "cmd": "du",
+        "desc": "Show file/directory size",
+        "explanation": "Estimates file space usage.",
+        "usage": "du [options] [file]",
+        "examples": [
+            "du -sh *",
+            "du -h folder"
+        ]
+    },
+    {
+        "cmd": "ps",
+        "desc": "Show running processes",
+        "explanation": "Displays currently running processes.",
+        "usage": "ps [options]",
+        "examples": [
+            "ps",
+            "ps aux"
+        ]
+    },
+    {
+        "cmd": "top",
+        "desc": "Monitor system processes",
+        "explanation": "Shows real-time system processes.",
+        "usage": "top",
+        "examples": [
+            "top"
+        ]
+    },
+    {
+        "cmd": "echo",
+        "desc": "Print text to terminal",
+        "explanation": "Outputs text or variables.",
+        "usage": "echo [text]",
+        "examples": [
+            "echo Hello",
+            "echo $HOME"
+        ]
+    },
+    {
+        "cmd": "whoami",
+        "desc": "Show current user",
+        "explanation": "Displays the current logged-in user.",
+        "usage": "whoami",
+        "examples": [
+            "whoami"
+        ]
+    },
+    {
+        "cmd": "uname",
+        "desc": "Show system information",
+        "explanation": "Displays system details.",
+        "usage": "uname [options]",
+        "examples": [
+            "uname",
+            "uname -a"
+        ]
+    }
 ]
 
 # -------------------------------
-# Hints for learning
-# -------------------------------
-command_hints = {
-    "ls": "List files and directories",
-    "pwd": "Show current directory",
-    "cd": "Change directory",
-    "mkdir": "Create a new directory",
-    "rmdir": "Remove empty directories",
-    "touch": "Create a new file",
-    "rm": "Remove files or directories",
-    "cp": "Copy files or directories",
-    "mv": "Move or rename files",
-    "tree": "Show directory tree",
-    "cat": "Show file contents",
-    "head": "Show first lines of a file",
-    "tail": "Show last lines of a file",
-    "less": "View file content interactively",
-    "nano": "Open a text editor",
-    "vim": "Open a powerful text editor",
-    "grep": "Search for text inside files",
-    "wc": "Count lines, words, characters",
-    "echo": "Print text",
-    "uname": "Show system info",
-    "whoami": "Show current user",
-    "id": "Show user and group IDs",
-    "date": "Show current date/time",
-    "uptime": "Show system uptime and load",
-    "ps": "List processes",
-    "top": "Monitor running processes",
-    "free": "Show memory usage",
-    "df": "Show disk usage",
-    "du": "Show folder/file size",
-    "ping": "Check network connectivity",
-    "curl": "Download data from a server",
-    "wget": "Download files",
-    "tar": "Archive files",
-    "gzip": "Compress files",
-    "gunzip": "Decompress files",
-    "zip": "Compress files into zip",
-    "unzip": "Extract zip files",
-    "alias": "Create command shortcut",
-    "history": "Show command history",
-    "sleep": "Pause execution",
-    "chmod": "Change file permissions",
-    "chown": "Change file owner",
-    "env": "Show environment variables",
-    "export": "Set environment variables",
-    "source": "Execute commands from file",
-    "clear": "Clear the screen",
-    "dmesg": "Show kernel logs",
-}
-
-# -------------------------------
-# Utility functions
+# Utility
 # -------------------------------
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def run_command(command, sandbox_path):
-    """Run a command safely inside sandbox."""
-    parts = command.strip().split()
-    if not parts:
-        return
-    
-    cmd = parts[0]
-    if cmd not in allowed_commands:
-        print(f"⚠️ Command '{cmd}' is not allowed in the sandbox.")
-        return
-    
-    try:
-        # Run the command safely inside sandbox
-        result = subprocess.run(parts, cwd=sandbox_path, capture_output=True, text=True, shell=False)
-        if result.stdout:
-            print(result.stdout)
-        if result.stderr:
-            print(result.stderr)
-    except Exception as e:
-        print(f"Error: {e}")
-
 # -------------------------------
-# Game logic
+# Game Logic
 # -------------------------------
 def game_intro():
     clear_screen()
-    print("🔥 Welcome to Linux Sandbox RPG! 🔥\n")
-    print("Explore, create, and manipulate files in your safe virtual Linux environment.")
-    print("Earn points for using commands correctly and completing missions.\n")
-    input("Press Enter to enter your sandbox...")
+    print("🔥 Linux Command RPG (Trivia Edition) 🔥\n")
+    print("Learn Linux commands through gameplay.\n")
+    print("Type the correct command based on the hint.\n")
+    input("Press Enter to begin...")
 
-def play_round(sandbox_path):
+def play_round():
     global score, level, streak
     
-    # Pick a random command hint for the player
-    cmd, hint = random.choice(list(command_hints.items()))
+    command = random.choice(commands)
     
     clear_screen()
     print(f"Level {level} | Score: {score} | Streak: {streak}")
-    print(f"\n💡 Hint: {hint}")
-    print(f"📂 Sandbox Path: {sandbox_path}\n")
+    print(f"\n💡 Hint: {command['desc']}\n")
     
-    answer = input("Type the Linux command here: ").strip()
+    answer = input("Type the Linux command: ").strip()
     
-    if answer.startswith(cmd):
+    if answer == command["cmd"]:
         points = random.randint(5, 15)
         score += points
         streak += 1
-        print(f"✅ Correct usage! You earned {points} points.")
+        
+        print(f"\n✅ Correct! +{points} points")
+        
         if streak > 2:
             bonus = streak * 2
             score += bonus
-            print(f"🔥 Streak bonus! +{bonus} points.")
-        run_command(answer, sandbox_path)
+            print(f"🔥 Streak bonus! +{bonus}")
+    
     else:
         points = random.randint(3, 10)
         score -= points
         streak = 0
-        print(f"❌ Wrong or incomplete command. The correct command starts with '{cmd}'. You lost {points} points.")
+        
+        print(f"\n❌ Incorrect. -{points} points")
+        print(f"Correct answer: {command['cmd']}")
     
-    # Level up every 50 points
+    # -------------------------------
+    # Learning Section
+    # -------------------------------
+    print("\n📘 Explanation:")
+    print(command["explanation"])
+    
+    print("\n⚙️ Usage:")
+    print(command["usage"])
+    
+    print("\n💻 Examples:")
+    for ex in command["examples"]:
+        print(f"  - {ex}")
+    
+    # Level up
     if score >= level * 50:
         level += 1
-        print(f"\n🎉 Congratulations! You've reached Level {level}!")
+        print(f"\n🎉 Level Up! You are now Level {level}")
     
-    time.sleep(2)
+    input("\nPress Enter to continue...")
 
 # -------------------------------
-# Main function
+# Main
 # -------------------------------
 def main():
     game_intro()
     
-    # Create sandbox directory
-    sandbox_path = tempfile.mkdtemp(prefix="linux_sandbox_")
-    
-    try:
-        while True:
-            play_round(sandbox_path)
-            cont = input("\nContinue playing? (y/n): ").strip().lower()
-            if cont != 'y':
-                print(f"\n🏆 Final Score: {score} | Reached Level: {level}")
-                break
-    finally:
-        # Clean up sandbox
-        shutil.rmtree(sandbox_path)
-        print("\nSandbox deleted. All changes were temporary. Thanks for playing! 🚀")
+    while True:
+        play_round()
+        cont = input("\nContinue playing? (y/n): ").strip().lower()
+        if cont != 'y':
+            print(f"\n🏆 Final Score: {score} | Level: {level}")
+            print("Good luck mastering Linux 🚀")
+            break
 
 if __name__ == "__main__":
     main()
