@@ -1,0 +1,301 @@
+{
+  "commands": [
+    {
+      "cmd": "ls",
+      "desc": "List files and directories",
+      "category": "filesystem",
+      "explanation": "Displays files and directories in the current location.",
+      "usage": "ls [options] [directory]",
+      "examples": ["ls", "ls -la", "ls /home/user"]
+    },
+    {
+      "cmd": "pwd",
+      "desc": "Print current working directory",
+      "category": "filesystem",
+      "explanation": "Shows the full path of your current directory.",
+      "usage": "pwd",
+      "examples": ["pwd"]
+    },
+    {
+      "cmd": "cd",
+      "desc": "Change directory",
+      "category": "filesystem",
+      "explanation": "Moves you into another directory.",
+      "usage": "cd [directory]",
+      "examples": ["cd /home", "cd ..", "cd ~"]
+    },
+    {
+      "cmd": "mkdir",
+      "desc": "Create a directory",
+      "category": "filesystem",
+      "explanation": "Creates new directories.",
+      "usage": "mkdir [name]",
+      "examples": ["mkdir test", "mkdir -p a/b/c"]
+    },
+    {
+      "cmd": "rmdir",
+      "desc": "Remove empty directory",
+      "category": "filesystem",
+      "explanation": "Deletes empty directories.",
+      "usage": "rmdir [directory]",
+      "examples": ["rmdir test"]
+    },
+    {
+      "cmd": "touch",
+      "desc": "Create empty file",
+      "category": "filesystem",
+      "explanation": "Creates a new empty file or updates timestamps.",
+      "usage": "touch [file]",
+      "examples": ["touch file.txt"]
+    },
+    {
+      "cmd": "cp",
+      "desc": "Copy files or directories",
+      "category": "filesystem",
+      "explanation": "Copies files or directories to another location.",
+      "usage": "cp [source] [destination]",
+      "examples": ["cp file.txt backup.txt", "cp -r dir1 dir2"]
+    },
+    {
+      "cmd": "mv",
+      "desc": "Move or rename files",
+      "category": "filesystem",
+      "explanation": "Moves or renames files and directories.",
+      "usage": "mv [source] [destination]",
+      "examples": ["mv file.txt new.txt"]
+    },
+    {
+      "cmd": "rm",
+      "desc": "Remove files",
+      "category": "filesystem",
+      "explanation": "Deletes files or directories.",
+      "usage": "rm [options] [file]",
+      "examples": ["rm file.txt", "rm -r folder"]
+    },
+    {
+      "cmd": "tree",
+      "desc": "Display directory tree",
+      "category": "filesystem",
+      "explanation": "Shows directory structure visually.",
+      "usage": "tree",
+      "examples": ["tree", "tree -L 2"]
+    },
+
+    {
+      "cmd": "cat",
+      "desc": "View file contents",
+      "category": "files",
+      "explanation": "Prints file contents to terminal.",
+      "usage": "cat [file]",
+      "examples": ["cat file.txt"]
+    },
+    {
+      "cmd": "less",
+      "desc": "View file interactively",
+      "category": "files",
+      "explanation": "Allows scrolling through file content.",
+      "usage": "less [file]",
+      "examples": ["less file.txt"]
+    },
+    {
+      "cmd": "head",
+      "desc": "Show first lines",
+      "category": "files",
+      "explanation": "Displays the beginning of a file.",
+      "usage": "head [file]",
+      "examples": ["head file.txt", "head -n 20 file.txt"]
+    },
+    {
+      "cmd": "tail",
+      "desc": "Show last lines",
+      "category": "files",
+      "explanation": "Displays the end of a file.",
+      "usage": "tail [file]",
+      "examples": ["tail file.txt", "tail -f log.txt"]
+    },
+    {
+      "cmd": "wc",
+      "desc": "Count lines/words",
+      "category": "files",
+      "explanation": "Counts lines, words, and characters.",
+      "usage": "wc [file]",
+      "examples": ["wc file.txt", "wc -l file.txt"]
+    },
+
+    {
+      "cmd": "grep",
+      "desc": "Search text in files",
+      "category": "search",
+      "explanation": "Searches for patterns in files.",
+      "usage": "grep [pattern] [file]",
+      "examples": ["grep 'error' log.txt", "grep -r hello ."]
+    },
+    {
+      "cmd": "find",
+      "desc": "Find files",
+      "category": "search",
+      "explanation": "Searches for files in directories.",
+      "usage": "find [path] [conditions]",
+      "examples": ["find . -name '*.txt'"]
+    },
+    {
+      "cmd": "locate",
+      "desc": "Quick file search",
+      "category": "search",
+      "explanation": "Finds files quickly using database.",
+      "usage": "locate [name]",
+      "examples": ["locate file.txt"]
+    },
+
+    {
+      "cmd": "chmod",
+      "desc": "Change permissions",
+      "category": "permissions",
+      "explanation": "Modifies file access permissions.",
+      "usage": "chmod [mode] [file]",
+      "examples": ["chmod 755 script.sh"]
+    },
+    {
+      "cmd": "chown",
+      "desc": "Change ownership",
+      "category": "permissions",
+      "explanation": "Changes file owner/group.",
+      "usage": "chown user:group file",
+      "examples": ["chown user file.txt"]
+    },
+
+    {
+      "cmd": "ps",
+      "desc": "Show processes",
+      "category": "system",
+      "explanation": "Displays running processes.",
+      "usage": "ps",
+      "examples": ["ps", "ps aux"]
+    },
+    {
+      "cmd": "top",
+      "desc": "Monitor processes",
+      "category": "system",
+      "explanation": "Real-time process viewer.",
+      "usage": "top",
+      "examples": ["top"]
+    },
+    {
+      "cmd": "htop",
+      "desc": "Interactive process viewer",
+      "category": "system",
+      "explanation": "Enhanced version of top.",
+      "usage": "htop",
+      "examples": ["htop"]
+    },
+    {
+      "cmd": "kill",
+      "desc": "Terminate process",
+      "category": "system",
+      "explanation": "Stops a process by PID.",
+      "usage": "kill [PID]",
+      "examples": ["kill 1234"]
+    },
+
+    {
+      "cmd": "df",
+      "desc": "Disk usage",
+      "category": "system",
+      "explanation": "Shows disk space usage.",
+      "usage": "df",
+      "examples": ["df -h"]
+    },
+    {
+      "cmd": "du",
+      "desc": "Directory size",
+      "category": "system",
+      "explanation": "Shows size of files/folders.",
+      "usage": "du",
+      "examples": ["du -sh *"]
+    },
+
+    {
+      "cmd": "free",
+      "desc": "Memory usage",
+      "category": "system",
+      "explanation": "Displays RAM usage.",
+      "usage": "free",
+      "examples": ["free -h"]
+    },
+
+    {
+      "cmd": "echo",
+      "desc": "Print text",
+      "category": "general",
+      "explanation": "Outputs text or variables.",
+      "usage": "echo [text]",
+      "examples": ["echo hello", "echo $HOME"]
+    },
+    {
+      "cmd": "history",
+      "desc": "Command history",
+      "category": "general",
+      "explanation": "Shows previously run commands.",
+      "usage": "history",
+      "examples": ["history"]
+    },
+    {
+      "cmd": "alias",
+      "desc": "Create shortcut",
+      "category": "general",
+      "explanation": "Creates command shortcuts.",
+      "usage": "alias name='command'",
+      "examples": ["alias ll='ls -la'"]
+    },
+
+    {
+      "cmd": "ping",
+      "desc": "Test connectivity",
+      "category": "network",
+      "explanation": "Checks network connectivity.",
+      "usage": "ping [host]",
+      "examples": ["ping google.com"]
+    },
+    {
+      "cmd": "curl",
+      "desc": "Transfer data",
+      "category": "network",
+      "explanation": "Transfers data from URLs.",
+      "usage": "curl [url]",
+      "examples": ["curl https://example.com"]
+    },
+    {
+      "cmd": "wget",
+      "desc": "Download files",
+      "category": "network",
+      "explanation": "Downloads files from the web.",
+      "usage": "wget [url]",
+      "examples": ["wget https://file.com/file.zip"]
+    },
+
+    {
+      "cmd": "tar",
+      "desc": "Archive files",
+      "category": "compression",
+      "explanation": "Creates/extracts archives.",
+      "usage": "tar [options]",
+      "examples": ["tar -cvf file.tar folder", "tar -xvf file.tar"]
+    },
+    {
+      "cmd": "zip",
+      "desc": "Compress files",
+      "category": "compression",
+      "explanation": "Compresses files into zip format.",
+      "usage": "zip [file]",
+      "examples": ["zip archive.zip file.txt"]
+    },
+    {
+      "cmd": "unzip",
+      "desc": "Extract zip",
+      "category": "compression",
+      "explanation": "Extracts zip archives.",
+      "usage": "unzip file.zip",
+      "examples": ["unzip archive.zip"]
+    }
+  ]
+}
