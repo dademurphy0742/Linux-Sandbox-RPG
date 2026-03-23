@@ -47,31 +47,19 @@ You can plug in different datasets:
 
 ---
 
-## 📂 Project Structure
-
-```
-Linux-Sandbox-RPG/
-│
-├── main.py              # Game engine
-├── commands.json        # Command dataset (Linux or Kali)
-└── README.md            # Project documentation
-```
-
----
-
 ## ⚙️ Installation
 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/Linux-Sandbox-RPG.git
+git clone https://github.com/dademurphy0742/Linux-Sandbox-RPG/.git
 cd Linux-Sandbox-RPG
 ```
 
 2. Run the game:
 
 ```bash
-python3 main.py
+python3 linuxsandboxrpg.py
 ```
 
 ---
@@ -101,7 +89,7 @@ python3 main.py
 
 ## 🔧 Customization
 
-Easily expand the game by editing `commands.json`.
+Easily expand the game by editing `linux_commands.json and kali_commands.json`.
 
 Each command follows this structure:
 
